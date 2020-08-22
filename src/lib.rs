@@ -398,72 +398,6 @@ pub use offset_date_time::OffsetDateTime;
 pub use primitive_date_time::PrimitiveDateTime;
 #[allow(deprecated)]
 pub use sign::Sign;
-/// Construct a [`Date`] with a statically known value.
-///
-/// The resulting expression can be used in `const` or `static` declarations.
-///
-/// Three formats are supported: year-week-weekday, year-ordinal, and
-/// year-month-day.
-///
-/// ```rust
-/// # use time::{Date, date, Weekday::*};
-/// # fn main() -> time::Result<()> {
-/// assert_eq!(date!(2020-W01-3), Date::try_from_iso_ywd(2020, 1, Wednesday)?);
-/// assert_eq!(date!(2020-001), Date::try_from_yo(2020, 1)?);
-/// assert_eq!(date!(2020-01-01), Date::try_from_ymd(2020, 1, 1)?);
-/// # Ok(())
-/// # }
-/// ```
-pub use time_macros::date;
-/// Construct a [`UtcOffset`] with a statically known value.
-///
-/// The resulting expression can be used in `const` or `static` declarations.
-///
-/// A sign and the hour must be provided; minutes and seconds default to zero.
-/// `UTC` (both uppercase and lowercase) is also allowed.
-///
-/// ```rust
-/// # use time::{offset, UtcOffset};
-/// assert_eq!(offset!(UTC), UtcOffset::hours(0));
-/// assert_eq!(offset!(utc), UtcOffset::hours(0));
-/// assert_eq!(offset!(+0), UtcOffset::hours(0));
-/// assert_eq!(offset!(+1), UtcOffset::hours(1));
-/// assert_eq!(offset!(-1), UtcOffset::hours(-1));
-/// assert_eq!(offset!(+1:30), UtcOffset::minutes(90));
-/// assert_eq!(offset!(-1:30), UtcOffset::minutes(-90));
-/// assert_eq!(offset!(+1:30:59), UtcOffset::seconds(5459));
-/// assert_eq!(offset!(-1:30:59), UtcOffset::seconds(-5459));
-/// assert_eq!(offset!(+23:59:59), UtcOffset::seconds(86_399));
-/// assert_eq!(offset!(-23:59:59), UtcOffset::seconds(-86_399));
-/// ```
-pub use time_macros::offset;
-/// Construct a [`Time`] with a statically known value.
-///
-/// The resulting expression can be used in `const` or `static` declarations.
-///
-/// Hours and minutes must be provided, while seconds defaults to zero. AM/PM is
-/// allowed (either uppercase or lowercase). Any number of subsecond digits may
-/// be provided (though any past nine will be discarded).
-///
-/// All components are validated at compile-time. An error will be raised if any
-/// value is invalid.
-///
-/// ```rust
-/// # use time::{Time, time};
-/// # fn main() -> time::Result<()> {
-/// assert_eq!(time!(0:00), Time::try_from_hms(0, 0, 0)?);
-/// assert_eq!(time!(1:02:03), Time::try_from_hms(1, 2, 3)?);
-/// assert_eq!(time!(1:02:03.004_005_006), Time::try_from_hms_nano(1, 2, 3, 4_005_006)?);
-/// assert_eq!(time!(12:00 am), Time::try_from_hms(0, 0, 0)?);
-/// assert_eq!(time!(1:02:03 am), Time::try_from_hms(1, 2, 3)?);
-/// assert_eq!(time!(1:02:03.004_005_006 am), Time::try_from_hms_nano(1, 2, 3, 4_005_006)?);
-/// assert_eq!(time!(12:00 pm), Time::try_from_hms(12, 0, 0)?);
-/// assert_eq!(time!(1:02:03 pm), Time::try_from_hms(13, 2, 3)?);
-/// assert_eq!(time!(1:02:03.004_005_006 pm), Time::try_from_hms_nano(13, 2, 3, 4_005_006)?);
-/// # Ok(())
-/// # }
-/// ```
-pub use time_macros::time;
 pub use time_mod::Time;
 pub use utc_offset::UtcOffset;
 pub use weekday::Weekday;
@@ -487,14 +421,6 @@ pub mod prelude {
     pub use crate::{NumericalDuration, NumericalStdDuration};
     #[cfg(use_trait_as_underscore)]
     pub use crate::{NumericalDuration as _, NumericalStdDuration as _};
-    // We need to re-export from the macros crate again (and not just do
-    // `crate::foo`) because of the way name resolution works in Rust. It's not
-    // currently possible to import _only_ the macro, so doing `use crate::time`
-    // also pulls in the `time` _crate_ (due to `extern crate self as time`).
-    //
-    // As a side note, doing `use crate::time` causes a stack overflow in
-    // rustc <= 1.37.0.
-    pub use time_macros::{date, offset, time};
 }
 
 /// Items generally useful in any file in the time crate.

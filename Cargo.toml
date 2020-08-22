@@ -32,10 +32,6 @@ cfg-if = "0.1.10"
 rand = { version = "0.7", optional = true, default-features = false }
 serde = { version = "1", optional = true, default-features = false, features = ["derive"] }
 standback = { version = "0.2.5", default-features = false }
-time-macros = { version = "0.1", path = "time-macros" }
-
-[workspace]
-members = ["time-macros", "time-macros-impl"]
 
 [target.'cfg(unix)'.dependencies]
 libc = { version = "0.2", optional = true }
